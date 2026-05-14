@@ -4,7 +4,7 @@
 #define TERMCLASS "st"
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
@@ -14,8 +14,8 @@ static       int smartgaps          = 0;        /* 1 means no outer gap when the
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const int user_bh            = 0;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
-static const char *fonts[]          = { "monospace:size=8" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "monospace:size=12", "NotoColorEmoji:pixelsize=12"};
+static const char dmenufont[]       = "monospace:size=14";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -43,7 +43,8 @@ static const Rule rules[] = {
 	{ "tor-browser",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",         NULL,       NULL,       1 << 8,       0,           -1 },
 	{ TERMCLASS,         "spcalc",   NULL,       0,            1,           -1 },
-	{ TERMCLASS,         "network",  NULL,       0,            1,           -1 },
+	{ TERMCLASS,         "webcam",   NULL,       0,            1,           -1 },
+	{ "webcam",         "NULL",      NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -150,22 +151,29 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_w,      spawn,          SHCMD("$BROWSER             ") }, /* $BROWSER set in ~/.zshenv as export BROWSER="firefox" */
         { MODKEY|ShiftMask,             XK_w,      spawn,          SHCMD("tor-browser          ") }, /* Tor browser: Secure browser                           */
 	{ MODKEY,                       XK_s,      spawn,          SHCMD("keepassxc            ") }, /* keepassxc: password manager                           */
-	{ MODKEY,                       XK_c,      spawn,          {.v = spcalc} }, /* keepassxc: password manager                           */
+	{ MODKEY,                       XK_c,      spawn,          {.v = spcalc} }, /* spcalc: simple calculator*/
 	
 	/*Tools*/
 	{ MODKEY,                       XK_F2,      spawn,          SHCMD("$TERMINAL -e setxkbmap -option caps:escape &") }, /* Set ESC:CAPS swap */
 
 	{ MODKEY|ShiftMask,             XK_F5,      spawn,          SHCMD("./.scripts/mac.sh") }, /* Mac Changer */
 	{ MODKEY,                       XK_F5,      spawn,          {.v = network }}, /* Set Network in TUI */
-	{ MODKEY,                       XK_F7,      spawn,          SHCMD("mpv /dev/video0") }, /* Webcam */
-	{ MODKEY,                       XK_F8,      spawn,          SHCMD("killall screenkey || screenkey && notify-send 'screenkey' 'screenkey started.' --icon=none ") }, /* keyboard screen */
-
+	{ MODKEY,                       XK_F7,      spawn,          SHCMD("mpv --untimed --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)")}, /*Webcam*/
+	{ MODKEY,                       XK_F11,      spawn,          SHCMD("killall screenkey || screenkey)") }, /* keyboard screen */
 	/*State modifiers*/
 	{ MODKEY,                       XK_F12,    spawn,        SHCMD("xautolock -locknow") },
-	{ MODKEY|ShiftMask,             XK_equal,  spawn,        SHCMD("sudo xbacklight -inc 15") },
-	{ MODKEY|ShiftMask,             XK_minus,  spawn,        SHCMD("sudo xbacklight -dec 15") },
+	{ MODKEY|ShiftMask,             XK_equal,  spawn,        SHCMD("doas xbacklight -inc 15") },
+	{ MODKEY|ShiftMask,             XK_minus,  spawn,        SHCMD("doas xbacklight -dec 15") },
 	{ MODKEY,                       XK_equal,  spawn,        SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +10%") },
 	{ MODKEY,                       XK_minus,  spawn,        SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -10%") },
+
+	/* Move floating windows with Mod4 + Alt + Arrow Keys */
+	/*
+	{ MODKEY|Mod1Mask,              XK_Left,   spawn,          SHCMD("xdotool windowmove $(xdotool getactivewindow) r--20 r+0") },
+	{ MODKEY|Mod1Mask,              XK_Right,  spawn,          SHCMD("xdotool windowmove $(xdotool getactivewindow) r+20 r+0") },
+	{ MODKEY|Mod1Mask,              XK_Up,     spawn,          SHCMD("xdotool windowmove $(xdotool getactivewindow) r+0 r--20") },
+	{ MODKEY|Mod1Mask,              XK_Down,   spawn,          SHCMD("xdotool windowmove $(xdotool getactivewindow) r+0 r+20") },
+	*/
 };
 
 /* button definitions */
